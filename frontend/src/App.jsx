@@ -1,7 +1,18 @@
-import WorkflowEditor from './components/WorkflowEditor'
+import WorkflowEditor from "./components/WorkflowEditor";
+import { useScribeRecorder } from "./components/ScribeRecorder";
 
 function App() {
-  return <WorkflowEditor />
+  const { isConnected, startRecording, stopRecording } = useScribeRecorder();
+
+  return (
+    <div>
+      <WorkflowEditor
+        onStartSession={startRecording}
+        onStopSession={stopRecording}
+        isSessionActive={isConnected}
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;
