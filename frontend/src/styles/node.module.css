@@ -14,7 +14,16 @@
   border-color: var(--border_color);
 }
 
+.node.active {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px var(--green);
+}
+
 .action_node {
+  border-color: var(--border_color);
+}
+
+.conditional_node {
   border-color: var(--border_color);
 }
 
@@ -70,7 +79,8 @@
 }
 
 .node_field select,
-.node_field input[type="number"] {
+.node_field input[type="number"],
+.node_field input[type="text"] {
   padding: 0.5rem;
   background-color: var(--dark_bg);
   border: 1px solid var(--dark_30);
@@ -81,7 +91,8 @@
 }
 
 .node_field select:focus,
-.node_field input[type="number"]:focus {
+.node_field input[type="number"]:focus,
+.node_field input[type="text"]:focus {
   outline: none;
   border-color: var(--light_50);
 }

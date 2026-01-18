@@ -22,6 +22,20 @@
   stroke: var(--light_70);
 }
 
+:global(.react-flow__edge.active .react-flow__edge-path) {
+  stroke: var(--green);
+  stroke-width: 3;
+}
+
+:global(.react-flow__edge-text) {
+  fill: var(--light);
+  font-size: 12px;
+}
+
+:global(.react-flow__edge-textbg) {
+  fill: var(--foreground);
+}
+
 :global(.react-flow__handle) {
   width: 10px;
   height: 10px;

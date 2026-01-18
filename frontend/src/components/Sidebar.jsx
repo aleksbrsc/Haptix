@@ -3,22 +3,23 @@ import styles from '../styles/sidebar.module.css';
 export default function Sidebar({ onAddNode, onReset }) {
   const nodeTypes = [
     { type: 'trigger', label: 'Trigger', icon: '/src/assets/images/icons/flag.svg' },
-    { type: 'action', label: 'Action', icon: '/src/assets/images/icons/lightning.svg' }
+    { type: 'action', label: 'Action', icon: '/src/assets/images/icons/lightning.svg' },
+    { type: 'conditional', label: 'If / Else', icon: '/src/assets/images/icons/branch.svg' }
   ];
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.app_header}>
         <h1 className={styles.app_title}>haptix</h1>
-        {/* <img src="/src/assets/images/icons/logo-white.svg" alt="logo" className={styles.app_logo} /> */}
+        <img src="/logo-white.svg" alt="logo" className={styles.app_logo} />
       </div>
       <h3>automation</h3>
       <div className={styles.sidebar_items}>
         <button className={styles.sidebar_item}>
           <span className={styles.sidebar_icon}>
-            <img src="/src/assets/images/icons/play.svg" alt="play" />
+            <img src="/src/assets/images/icons/play.svg" alt="start" />
           </span>
-          <span className={styles.sidebar_label}>Play</span>
+          <span className={styles.sidebar_label}>Start</span>
         </button>
         <button className={styles.sidebar_item} onClick={onReset}>
           <span className={styles.sidebar_icon}>
