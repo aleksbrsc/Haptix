@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ReactFlow,
   Background,
@@ -12,12 +12,14 @@ import '@xyflow/react/dist/style.css';
 
 import TriggerNode from './nodes/TriggerNode';
 import ActionNode from './nodes/ActionNode';
+import ConditionalNode from './nodes/ConditionalNode';
 import Sidebar from './Sidebar';
 import styles from '../styles/workflow_editor.module.css';
 
 const nodeTypes = {
   trigger: TriggerNode,
   action: ActionNode,
+  conditional: ConditionalNode,
 };
 
 let nodeId = 0;
@@ -26,11 +28,93 @@ const getNodeId = () => `node_${nodeId++}`;
 export default function WorkflowEditor() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [executionState, setExecutionState] = useState({});
+  const [activeNodeIds, setActiveNodeIds] = useState([]);
   const startNodeId = useRef(null);
+  const nodesRef = useRef(nodes);
+  const edgesRef = useRef(edges);
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    nodesRef.current = nodes;
+    edgesRef.current = edges;
+  }, [nodes, edges]);
+
+  // Helper function to find closest ancestor trigger node
+  const getAncestorTrigger = useCallback((nodeId) => {
+    const currentEdges = edgesRef.current;
+    const currentNodes = nodesRef.current;
+    
+    let currentNodeId = nodeId;
+    const visited = new Set();
+    
+    while (currentNodeId && !visited.has(currentNodeId)) {
+      visited.add(currentNodeId);
+      
+      const incomingEdge = currentEdges.find(e => e.target === currentNodeId);
+      if (!incomingEdge) return null;
+      
+      const parentNode = currentNodes.find(n => n.id === incomingEdge.source);
+      if (!parentNode) return null;
+      
+      if (parentNode.type === 'trigger') {
+        return parentNode;
+      }
+      
+      currentNodeId = parentNode.id;
+    }
+    
+    return null;
+  }, []);
+
+  // Helper function to get available parameters from ancestor trigger node
+  const getParentParameters = useCallback((nodeId) => {
+    const trigger = getAncestorTrigger(nodeId);
+    if (!trigger) return [];
+
+    const params = [];
+    // Only triggers have dynamic parameters worth evaluating
+    params.push({ id: 'seconds', label: 'Seconds' });
+    return params;
+  }, [getAncestorTrigger]);
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
+    (params) => {
+      // Check if source is a conditional node and add label
+      const sourceNode = nodes.find(n => n.id === params.source);
+      const edgeLabel = sourceNode?.type === 'conditional' && params.sourceHandle 
+        ? params.sourceHandle 
+        : '';
+      
+      const newEdge = {
+        ...params,
+        label: edgeLabel,
+        labelStyle: { fill: 'var(--light)', fontWeight: 500 },
+        labelBgStyle: { fill: 'var(--foreground)' },
+      };
+      
+      setEdges((eds) => addEdge(newEdge, eds));
+      
+      // Update conditional nodes with new parent parameters
+      const targetNode = nodes.find(n => n.id === params.target);
+      if (targetNode?.type === 'conditional') {
+        setNodes((nds) => 
+          nds.map((node) => {
+            if (node.id === params.target && node.type === 'conditional') {
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  getParentParameters: () => getParentParameters(node.id),
+                },
+              };
+            }
+            return node;
+          })
+        );
+      }
+    },
+    [setEdges, nodes, setNodes, getParentParameters]
   );
 
   // Initialize with a start trigger node
@@ -123,21 +207,30 @@ export default function WorkflowEditor() {
 
   const addNode = useCallback((type) => {
     const id = getNodeId();
+    
+    // Find the rightmost node position
+    const rightmostX = nodes.length > 0 
+      ? Math.max(...nodes.map(node => node.position.x))
+      : 0;
+    
+    // Position new node to the right of the rightmost node with spacing
     const newNode = {
       id,
       type,
       position: {
-        x: Math.random() * 400 + 100,
-        y: Math.random() * 300 + 100,
+        x: rightmostX + 300,
+        y: Math.random() * 100,
       },
       data: {
         onChange: onNodeDataChange,
+        getParentParameters: type === 'conditional' ? () => getParentParameters(id) : undefined,
         ...(type === 'trigger' ? { triggerType: 'timer', seconds: 5, isStart: false } : {}),
         ...(type === 'action' ? { actionType: 'vibe', value: 50 } : {}),
+        ...(type === 'conditional' ? { parameter: 'value', operator: '>', compareValue: '50' } : {}),
       },
     };
     setNodes((nds) => [...nds, newNode]);
-  }, [setNodes, onNodeDataChange]);
+  }, [setNodes, onNodeDataChange, nodes, getParentParameters]);
 
   return (
     <div className={styles.workflow_editor}>
@@ -150,8 +243,7 @@ export default function WorkflowEditor() {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
-          fitView
-          fitViewOptions={{ padding: 0.5, maxZoom: 1.0 }}
+          defaultViewport={{ x: 250, y: 250, zoom: 0.8 }}
           proOptions={{ hideAttribution: true }}
         >
           <Background />

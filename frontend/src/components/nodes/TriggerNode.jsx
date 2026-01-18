@@ -11,6 +11,7 @@ export default function TriggerNode({ data, id }) {
 
   return (
     <div className={`${styles.node} ${styles.trigger_node} ${data.isStart ? styles.start_node : ''}`}>
+      <Handle type="target" position={Position.Left} />
       <div className={styles.node_header}>
         <span className={styles.node_icon}>
           <img src="/src/assets/images/icons/flag.svg" alt="flag" />
