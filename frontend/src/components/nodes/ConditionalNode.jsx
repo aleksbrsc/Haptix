@@ -35,6 +35,7 @@ export default function ConditionalNode({ data, id }) {
           <select
             value={data.parameter || (availableParams[0]?.id || 'value')}
             onChange={(e) => data.onChange(id, 'parameter', e.target.value)}
+            disabled={data.isSessionActive}
           >
             {availableParams.map(param => (
               <option key={param.id} value={param.id}>{param.label}</option>
@@ -47,6 +48,7 @@ export default function ConditionalNode({ data, id }) {
           <select
             value={data.operator || '>'}
             onChange={(e) => data.onChange(id, 'operator', e.target.value)}
+            disabled={data.isSessionActive}
           >
             {operators.map(op => (
               <option key={op.id} value={op.id}>{op.label}</option>
@@ -61,6 +63,7 @@ export default function ConditionalNode({ data, id }) {
             value={data.compareValue || ''}
             onChange={(e) => data.onChange(id, 'compareValue', e.target.value)}
             placeholder="Enter value..."
+            disabled={data.isSessionActive}
           />
         </div>
       </div>

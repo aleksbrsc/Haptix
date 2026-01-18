@@ -27,6 +27,7 @@ export default function TriggerNode({ data, id }) {
           <select 
             value={data.triggerType || 'keyword'}
             onChange={(e) => data.onChange?.(id, 'triggerType', e.target.value)}
+            disabled={data.isSessionActive}
           >
             {triggerTypes.map(type => (
               <option key={type.id} value={type.id}>{type.label}</option>
@@ -42,6 +43,7 @@ export default function TriggerNode({ data, id }) {
               onChange={(e) => data.onChange?.(id, 'keyword', e.target.value)}
               placeholder="e.g. 'Stop'"
               rows={2}
+              disabled={data.isSessionActive}
             />
           </div>
         )}
@@ -54,6 +56,7 @@ export default function TriggerNode({ data, id }) {
               onChange={(e) => data.onChange?.(id, 'prompt', e.target.value)}
               placeholder="Enter natural language prompt... e.g. 'when conversation goes off-topic'"
               rows={4}
+              disabled={data.isSessionActive}
             />
           </div>
         )}

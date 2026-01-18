@@ -39,8 +39,13 @@ export default function WorkflowEditor({
   const [nodes, setNodes, onNodesChangeInternal] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  // Prevent deletion of start trigger node
+  // Prevent deletion of start trigger node and disable all changes during session
   const onNodesChange = useCallback((changes) => {
+    // Block all changes if session is active
+    if (isSessionActive) {
+      return;
+    }
+    
     const filteredChanges = changes.filter(change => {
       if (change.type === 'remove') {
         const nodeToRemove = nodes.find(n => n.id === change.id);
@@ -51,7 +56,7 @@ export default function WorkflowEditor({
       return true;
     });
     onNodesChangeInternal(filteredChanges);
-  }, [nodes, onNodesChangeInternal]);
+  }, [nodes, onNodesChangeInternal, isSessionActive]);
   const [isExecuting, setIsExecuting] = useState(false);
   const [activeNodeIds, setActiveNodeIds] = useState([]);
   const [activeEdgeIds, setActiveEdgeIds] = useState([]);
@@ -233,6 +238,11 @@ export default function WorkflowEditor({
 
   const onConnect = useCallback(
     (params) => {
+      // Block connections if session is active
+      if (isSessionActive) {
+        return;
+      }
+      
       // Check if source is a conditional node and add label
       const sourceNode = nodes.find((n) => n.id === params.source);
       const edgeLabel =
@@ -268,7 +278,7 @@ export default function WorkflowEditor({
         );
       }
     },
-    [setEdges, nodes, setNodes, getParentParameters],
+    [setEdges, nodes, setNodes, getParentParameters, isSessionActive],
   );
 
   // Initialize with a start trigger node
@@ -282,6 +292,10 @@ export default function WorkflowEditor({
         position: { x: 250, y: 150 },
         data: {
           onChange: (nodeId, field, value) => {
+            // Block changes if session is active
+            if (isSessionActive) {
+              return;
+            }
             setNodes((nds) =>
               nds.map((node) => {
                 if (node.id === nodeId) {
@@ -325,6 +339,10 @@ export default function WorkflowEditor({
 
   const onNodeDataChange = useCallback(
     (nodeId, field, value) => {
+      // Block changes if session is active
+      if (isSessionActive) {
+        return;
+      }
       setNodes((nds) =>
         nds.map((node) => {
           if (node.id === nodeId) {
@@ -340,10 +358,14 @@ export default function WorkflowEditor({
         }),
       );
     },
-    [setNodes],
+    [setNodes, isSessionActive],
   );
 
   const handleReset = useCallback(() => {
+    // Block reset if session is active
+    if (isSessionActive) {
+      return;
+    }
     // Reset node ID counter
     nodeId = 0;
     // Create fresh start node
@@ -368,10 +390,15 @@ export default function WorkflowEditor({
     if (onResetVisualFeedback) {
       onResetVisualFeedback();
     }
-  }, [setNodes, setEdges, onNodeDataChange, onResetVisualFeedback]);
+  }, [setNodes, setEdges, onNodeDataChange, onResetVisualFeedback, isSessionActive]);
 
   const addNode = useCallback(
     (type) => {
+      // Block adding nodes if session is active
+      if (isSessionActive) {
+        return;
+      }
+      
       const id = getNodeId();
 
       // Find the rightmost node position
@@ -390,6 +417,7 @@ export default function WorkflowEditor({
         },
         data: {
           onChange: onNodeDataChange,
+          isSessionActive,
           getParentParameters:
             type === "conditional" ? () => getParentParameters(id) : undefined,
           ...(type === "trigger"
@@ -403,7 +431,7 @@ export default function WorkflowEditor({
       };
       setNodes((nds) => [...nds, newNode]);
     },
-    [setNodes, onNodeDataChange, nodes, getParentParameters],
+    [setNodes, onNodeDataChange, nodes, getParentParameters, isSessionActive],
   );
 
   // Check if workflow can be executed
@@ -464,12 +492,16 @@ export default function WorkflowEditor({
       return {
         ...node,
         className,
+        data: {
+          ...node.data,
+          isSessionActive,
+        },
         style: {
           ...node.style,
         },
       };
     });
-  }, [nodes, activeNodes, executedNodes]);
+  }, [nodes, activeNodes, executedNodes, isSessionActive]);
 
   // Apply executed class to edges
   const edgesWithActiveClass = useMemo(() => {

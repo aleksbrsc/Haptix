@@ -64,7 +64,11 @@ export default function Sidebar({
             {isStarting ? "Starting..." : isSessionActive ? "Stop" : "Start"}
           </span>
         </button>
-        <button className={styles.sidebar_item} onClick={onReset}>
+        <button 
+          className={`${styles.sidebar_item} ${isSessionActive ? styles.sidebar_item_disabled : ''}`}
+          onClick={onReset}
+          disabled={isSessionActive}
+        >
           <span className={styles.sidebar_icon}>
             <img src={resetIcon} alt="reset" />
           </span>
@@ -84,8 +88,9 @@ export default function Sidebar({
         {nodeTypes.map((node) => (
           <button
             key={node.type}
-            className={styles.sidebar_item}
+            className={`${styles.sidebar_item} ${isSessionActive ? styles.sidebar_item_disabled : ''}`}
             onClick={() => onAddNode(node.type)}
+            disabled={isSessionActive}
           >
             <span className={styles.sidebar_icon}>
               <img src={node.icon} alt={node.label} />

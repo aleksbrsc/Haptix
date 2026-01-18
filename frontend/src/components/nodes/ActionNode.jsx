@@ -43,6 +43,7 @@ export default function ActionNode({ data, id }) {
           <select 
             value={data.actionType || 'vibe'}
             onChange={(e) => data.onChange?.(id, 'actionType', e.target.value)}
+            disabled={data.isSessionActive}
           >
             {actionTypes.map(type => (
               <option key={type.id} value={type.id}>{type.label}</option>
@@ -58,6 +59,7 @@ export default function ActionNode({ data, id }) {
               max="100" 
               value={data.value || 50}
               onChange={(e) => data.onChange?.(id, 'value', parseInt(e.target.value))}
+              disabled={data.isSessionActive}
             />
           </div>
         )}
@@ -70,6 +72,7 @@ export default function ActionNode({ data, id }) {
               max="10" 
               value={data.times || 1}
               onChange={(e) => data.onChange?.(id, 'times', parseInt(e.target.value))}
+              disabled={data.isSessionActive}
             />
           </div>
         )}
@@ -82,6 +85,7 @@ export default function ActionNode({ data, id }) {
               step="0.1"
               value={data.interval || 0}
               onChange={(e) => data.onChange?.(id, 'interval', parseFloat(e.target.value))}
+              disabled={data.isSessionActive}
             />
           </div>
         )}
@@ -93,6 +97,7 @@ export default function ActionNode({ data, id }) {
               min="1" 
               value={data.seconds || 15}
               onChange={(e) => data.onChange?.(id, 'seconds', parseInt(e.target.value))}
+              disabled={data.isSessionActive}
             />
           </div>
         )}
