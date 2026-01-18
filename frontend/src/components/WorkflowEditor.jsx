@@ -29,6 +29,12 @@ export default function WorkflowEditor({
   onStartSession,
   onStopSession,
   isSessionActive,
+  isStarting,
+  sessionId,
+  activeNodes = [],
+  executedNodes = [],
+  setActiveNodes,
+  onResetVisualFeedback,
 }) {
   const [nodes, setNodes, onNodesChangeInternal] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -357,7 +363,12 @@ export default function WorkflowEditor({
     // Reset to initial state with just the start node
     setNodes([startNode]);
     setEdges([]);
-  }, [setNodes, setEdges, onNodeDataChange]);
+    
+    // Clear visual feedback
+    if (onResetVisualFeedback) {
+      onResetVisualFeedback();
+    }
+  }, [setNodes, setEdges, onNodeDataChange, onResetVisualFeedback]);
 
   const addNode = useCallback(
     (type) => {
@@ -384,7 +395,7 @@ export default function WorkflowEditor({
           ...(type === "trigger"
             ? { triggerType: "keyword", keyword: "", isStart: false }
             : {}),
-          ...(type === "action" ? { actionType: "vibe", value: 50, seconds: 15 } : {}),
+          ...(type === "action" ? { actionType: "vibe", value: 50, times: 1, interval: 0, seconds: 15 } : {}),
           ...(type === "conditional"
             ? { parameter: "value", operator: ">", compareValue: "50" }
             : {}),
@@ -395,10 +406,25 @@ export default function WorkflowEditor({
     [setNodes, onNodeDataChange, nodes, getParentParameters],
   );
 
-  // Check if any action node is reachable from start trigger
+  // Check if workflow can be executed
   const canExecute = useMemo(() => {
     const startNode = nodes.find((n) => n.data.isStart);
     if (!startNode) return false;
+
+    // Check all trigger nodes have non-empty inputs
+    const triggerNodes = nodes.filter((n) => n.type === "trigger");
+    for (const trigger of triggerNodes) {
+      const triggerType = trigger.data.triggerType;
+      if (triggerType === "keyword") {
+        if (!trigger.data.keyword || trigger.data.keyword.trim() === "") {
+          return false; // Empty keyword
+        }
+      } else if (triggerType === "prompt") {
+        if (!trigger.data.prompt || trigger.data.prompt.trim() === "") {
+          return false; // Empty prompt
+        }
+      }
+    }
 
     // Traverse graph to find if any action node is reachable
     const visited = new Set();
@@ -422,26 +448,67 @@ export default function WorkflowEditor({
     return false; // No action node found
   }, [nodes, edges]);
 
-  // Apply active class to nodes
-  const nodesWithActiveClass = nodes.map((node) => ({
-    ...node,
-    className: activeNodeIds.includes(node.id) ? "active" : "",
-  }));
+  // Apply active (yellow) and executed (green) classes to nodes
+  const nodesWithActiveClass = useMemo(() => {
+    return nodes.map((node) => {
+      const isActive = activeNodes.includes(node.id);
+      const isExecuted = executedNodes.includes(node.id);
+      
+      let className = "";
+      if (isExecuted) {
+        className = "executed";
+      } else if (isActive) {
+        className = "active";
+      }
+      
+      return {
+        ...node,
+        className,
+        style: {
+          ...node.style,
+        },
+      };
+    });
+  }, [nodes, activeNodes, executedNodes]);
 
-  // Apply active class to edges
-  const edgesWithActiveClass = edges.map((edge) => ({
-    ...edge,
-    className: activeEdgeIds.includes(edge.id) ? "active" : "",
-  }));
+  // Apply executed class to edges
+  const edgesWithActiveClass = useMemo(() => {
+    const execEdges = window.__executedEdges || [];
+    return edges.map((edge) => ({
+      ...edge,
+      className: execEdges.includes(edge.id) ? "executed" : "",
+    }));
+  }, [edges, executedNodes]);
+
+  const handleStartClick = useCallback(() => {
+    // Serialize workflow and pass to parent
+    const workflow = {
+      nodes: nodes.map(node => ({
+        id: node.id,
+        type: node.type,
+        data: node.data,
+        position: node.position
+      })),
+      edges: edges.map(edge => ({
+        id: edge.id,
+        source: edge.source,
+        target: edge.target,
+        sourceHandle: edge.sourceHandle,
+        targetHandle: edge.targetHandle
+      }))
+    };
+    onStartSession(workflow);
+  }, [nodes, edges, onStartSession]);
 
   return (
     <div className={styles.workflow_editor}>
       <Sidebar
         onAddNode={addNode}
         onReset={handleReset}
-        onStartSession={onStartSession}
+        onStartSession={handleStartClick}
         onStopSession={onStopSession}
         isSessionActive={isSessionActive}
+        isStarting={isStarting}
         onExecute={executeWorkflow}
         onStop={stopExecution}
         isExecuting={isExecuting}

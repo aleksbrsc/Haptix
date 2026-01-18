@@ -13,6 +13,7 @@ export default function Sidebar({
   onStartSession,
   onStopSession,
   isSessionActive,
+  isStarting,
   onExecute,
   onStop,
   isExecuting,
@@ -45,17 +46,22 @@ export default function Sidebar({
       <h3>automation</h3>
       <div className={styles.sidebar_items}>
         <button
-          className={styles.sidebar_item}
+          className={`${styles.sidebar_item} ${(!canExecute || isStarting) && !isSessionActive ? styles.sidebar_item_disabled : ''}`}
           onClick={isSessionActive ? onStopSession : onStartSession}
+          disabled={(!canExecute || isStarting) && !isSessionActive}
         >
           <span className={styles.sidebar_icon}>
-            <img
-              src={isSessionActive ? stopIcon : startIcon}
-              alt={isSessionActive ? "stop session" : "start session"}
-            />
+            {isStarting ? (
+              <div className={styles.spinner}></div>
+            ) : (
+              <img
+                src={isSessionActive ? stopIcon : startIcon}
+                alt={isSessionActive ? "stop session" : "start session"}
+              />
+            )}
           </span>
           <span className={styles.sidebar_label}>
-            {isSessionActive ? "Stop" : "Start"}
+            {isStarting ? "Starting..." : isSessionActive ? "Stop" : "Start"}
           </span>
         </button>
         <button className={styles.sidebar_item} onClick={onReset}>

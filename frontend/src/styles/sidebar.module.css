@@ -76,6 +76,21 @@
   transform: none;
 }
 
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border_color);
+  border-top-color: var(--light);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .sidebar_icon {
   display: flex;
   align-items: center;

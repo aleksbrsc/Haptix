@@ -6,17 +6,17 @@ const actionTypes = [
   { 
     id: 'vibe', 
     label: 'Vibrate', 
-    params: ['value'] 
+    params: ['value', 'times', 'interval'] 
   },
   { 
     id: 'zap', 
     label: 'Zap', 
-    params: ['value'] 
+    params: ['value', 'times', 'interval'] 
   },
   { 
     id: 'beep', 
     label: 'Beep', 
-    params: ['value'] 
+    params: ['value', 'times', 'interval'] 
   },
   { 
     id: 'wait', 
@@ -58,6 +58,30 @@ export default function ActionNode({ data, id }) {
               max="100" 
               value={data.value || 50}
               onChange={(e) => data.onChange?.(id, 'value', parseInt(e.target.value))}
+            />
+          </div>
+        )}
+        {selectedType.params.includes('times') && (
+          <div className={styles.node_field}>
+            <label>Times (1-10)</label>
+            <input 
+              type="number" 
+              min="1" 
+              max="10" 
+              value={data.times || 1}
+              onChange={(e) => data.onChange?.(id, 'times', parseInt(e.target.value))}
+            />
+          </div>
+        )}
+        {selectedType.params.includes('interval') && (
+          <div className={styles.node_field}>
+            <label>Interval (seconds)</label>
+            <input 
+              type="number" 
+              min="0" 
+              step="0.1"
+              value={data.interval || 0}
+              onChange={(e) => data.onChange?.(id, 'interval', parseFloat(e.target.value))}
             />
           </div>
         )}

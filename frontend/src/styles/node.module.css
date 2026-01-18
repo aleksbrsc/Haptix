@@ -16,8 +16,8 @@
 }
 
 .node.active {
-  border-color: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+  border-color: var(--green) !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3) !important;
   animation: pulse 1s ease-in-out infinite;
 }
 
