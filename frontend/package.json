@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@elevenlabs/elevenlabs-js": "^2.31.0",
+    "@elevenlabs/react": "^0.13.0",
     "@radix-ui/react-slider": "^1.3.6",
     "@xyflow/react": "^12.10.0",
     "react": "^19.2.0",
