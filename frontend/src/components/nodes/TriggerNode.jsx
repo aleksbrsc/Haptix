@@ -1,59 +1,64 @@
-import { Handle, Position } from '@xyflow/react';
-import styles from '../../styles/node.module.css';
-import flagIcon from '../../assets/images/icons/flag.svg';
+import { Handle, Position } from "@xyflow/react";
+import styles from "../../styles/node.module.css";
+import flagIcon from "../../assets/images/icons/flag.svg";
 
 const triggerTypes = [
-  { id: 'keyword', label: 'Key word or phrase', params: ['keyword'] },
-  { id: 'prompt', label: 'Prompt', params: ['prompt'] },
+  { id: "keyword", label: "Key word/phrase", params: ["keyword"] },
+  { id: "prompt", label: "Trigger when...", params: ["prompt"] },
 ];
 
 export default function TriggerNode({ data, id }) {
-  const selectedType = triggerTypes.find(t => t.id === data.triggerType) || triggerTypes[0];
+  const selectedType =
+    triggerTypes.find((t) => t.id === data.triggerType) || triggerTypes[0];
 
   return (
-    <div className={`${styles.node} ${styles.trigger_node} ${data.isStart ? styles.start_node : ''}`}>
+    <div
+      className={`${styles.node} ${styles.trigger_node} ${data.isStart ? styles.start_node : ""}`}
+    >
       <Handle type="target" position={Position.Left} />
       <div className={styles.node_header}>
         <span className={styles.node_icon}>
           <img src={flagIcon} alt="flag" />
         </span>
         <span className={styles.node_title}>
-          {data.isStart ? 'Start Trigger' : 'Trigger'}
+          {data.isStart ? "Start Trigger" : "Trigger"}
         </span>
       </div>
       <div className={styles.node_body}>
         <div className={styles.node_field}>
           <label>Type</label>
-          <select 
-            value={data.triggerType || 'keyword'}
-            onChange={(e) => data.onChange?.(id, 'triggerType', e.target.value)}
+          <select
+            value={data.triggerType || "keyword"}
+            onChange={(e) => data.onChange?.(id, "triggerType", e.target.value)}
             disabled={data.isSessionActive}
           >
-            {triggerTypes.map(type => (
-              <option key={type.id} value={type.id}>{type.label}</option>
+            {triggerTypes.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.label}
+              </option>
             ))}
           </select>
         </div>
-        {selectedType.params.includes('keyword') && (
+        {selectedType.params.includes("keyword") && (
           <div className={styles.node_field}>
-            <label>Key word</label>
-            <textarea 
+            <label>Key word/phrase</label>
+            <textarea
               className="nodrag"
-              value={data.keyword || ''}
-              onChange={(e) => data.onChange?.(id, 'keyword', e.target.value)}
+              value={data.keyword || ""}
+              onChange={(e) => data.onChange?.(id, "keyword", e.target.value)}
               placeholder="e.g. 'Stop'"
               rows={2}
               disabled={data.isSessionActive}
             />
           </div>
         )}
-        {selectedType.params.includes('prompt') && (
+        {selectedType.params.includes("prompt") && (
           <div className={styles.node_field}>
-            <label>Prompt</label>
-            <textarea 
+            <label>Condition</label>
+            <textarea
               className="nodrag"
-              value={data.prompt || ''}
-              onChange={(e) => data.onChange?.(id, 'prompt', e.target.value)}
+              value={data.prompt || ""}
+              onChange={(e) => data.onChange?.(id, "prompt", e.target.value)}
               placeholder="Enter natural language prompt... e.g. 'when conversation goes off-topic'"
               rows={4}
               disabled={data.isSessionActive}
