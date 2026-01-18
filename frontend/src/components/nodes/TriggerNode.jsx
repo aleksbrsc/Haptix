@@ -1,5 +1,6 @@
 import { Handle, Position } from '@xyflow/react';
 import styles from '../../styles/node.module.css';
+import flagIcon from '../../assets/images/icons/flag.svg';
 
 const triggerTypes = [
   { id: 'keyword', label: 'Key word or phrase', params: ['keyword'] },
@@ -14,7 +15,7 @@ export default function TriggerNode({ data, id }) {
       <Handle type="target" position={Position.Left} />
       <div className={styles.node_header}>
         <span className={styles.node_icon}>
-          <img src="/src/assets/images/icons/flag.svg" alt="flag" />
+          <img src={flagIcon} alt="flag" />
         </span>
         <span className={styles.node_title}>
           {data.isStart ? 'Start Trigger' : 'Trigger'}

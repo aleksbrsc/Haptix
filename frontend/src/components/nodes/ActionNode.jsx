@@ -1,5 +1,6 @@
 import { Handle, Position } from '@xyflow/react';
 import styles from '../../styles/node.module.css';
+import lightningIcon from '../../assets/images/icons/lightning.svg';
 
 const actionTypes = [
   { 
@@ -32,7 +33,7 @@ export default function ActionNode({ data, id }) {
       <Handle type="target" position={Position.Left} />
       <div className={styles.node_header}>
         <span className={styles.node_icon}>
-          <img src="/src/assets/images/icons/lightning.svg" alt="lightning" />
+          <img src={lightningIcon} alt="lightning" />
         </span>
         <span className={styles.node_title}>Action</span>
       </div>

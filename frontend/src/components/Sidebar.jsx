@@ -1,4 +1,11 @@
 import styles from "../styles/sidebar.module.css";
+import flagIcon from "../assets/images/icons/flag.svg";
+import lightningIcon from "../assets/images/icons/lightning.svg";
+import branchIcon from "../assets/images/icons/branch.svg";
+import startIcon from "../assets/images/icons/start.svg";
+import stopIcon from "../assets/images/icons/stop.svg";
+import resetIcon from "../assets/images/icons/reset.svg";
+import shareIcon from "../assets/images/icons/share.svg";
 
 export default function Sidebar({
   onAddNode,
@@ -15,17 +22,17 @@ export default function Sidebar({
     {
       type: "trigger",
       label: "Trigger",
-      icon: "/src/assets/images/icons/flag.svg",
+      icon: flagIcon,
     },
     {
       type: "action",
       label: "Action",
-      icon: "/src/assets/images/icons/lightning.svg",
+      icon: lightningIcon,
     },
     {
       type: "conditional",
       label: "If / Else",
-      icon: "/src/assets/images/icons/branch.svg",
+      icon: branchIcon,
     },
   ];
 
@@ -43,11 +50,7 @@ export default function Sidebar({
         >
           <span className={styles.sidebar_icon}>
             <img
-              src={
-                isSessionActive
-                  ? "/src/assets/images/icons/stop.svg"
-                  : "/src/assets/images/icons/start.svg"
-              }
+              src={isSessionActive ? stopIcon : startIcon}
               alt={isSessionActive ? "stop session" : "start session"}
             />
           </span>
@@ -57,7 +60,7 @@ export default function Sidebar({
         </button>
         <button className={styles.sidebar_item} onClick={onReset}>
           <span className={styles.sidebar_icon}>
-            <img src="/src/assets/images/icons/reset.svg" alt="reset" />
+            <img src={resetIcon} alt="reset" />
           </span>
           <span className={styles.sidebar_label}>Reset</span>
         </button>
@@ -65,7 +68,7 @@ export default function Sidebar({
           className={`${styles.sidebar_item} ${styles.sidebar_item_disabled}`}
         >
           <span className={styles.sidebar_icon}>
-            <img src="/src/assets/images/icons/share.svg" alt="share" />
+            <img src={shareIcon} alt="share" />
           </span>
           <span className={styles.sidebar_label}>Share</span>
         </button>

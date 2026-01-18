@@ -1,5 +1,6 @@
 import { Handle, Position } from '@xyflow/react';
 import styles from '../../styles/node.module.css';
+import branchIcon from '../../assets/images/icons/branch.svg';
 
 const operators = [
   { id: '>', label: '>' },
@@ -23,7 +24,7 @@ export default function ConditionalNode({ data, id }) {
       
       <div className={styles.node_header}>
         <span className={styles.node_icon}>
-          <img src="/src/assets/images/icons/branch.svg" alt="if/else" />
+          <img src={branchIcon} alt="if/else" />
         </span>
         <span className={styles.node_title}>If / Else</span>
       </div>
