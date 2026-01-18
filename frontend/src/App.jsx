@@ -1,11 +1,7 @@
-import './App.css'
+import WorkflowEditor from './components/WorkflowEditor'
 
 function App() {
-  return (
-    <div>
-      <h1>hackville moment</h1>
-    </div>
-  )
+  return <WorkflowEditor />
 }
 
 export default App

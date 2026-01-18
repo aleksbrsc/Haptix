@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'Hanken Grotesk';
+  src: url('./assets/fonts/HankenGrotesk-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Hanken Grotesk';
+  src: url('./assets/fonts/HankenGrotesk-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+}
+
 :root {
   --bg: #FFFFFF;
   --dark_bg: #181A1D;
@@ -33,11 +47,17 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background-color: var(--dark);
+  font-family: 'Hanken Grotesk', sans-serif;
+  background-color: var(--dark_bg);
   color: var(--light);
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
 }

@@ -1,0 +1,54 @@
+.workflow_editor {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.flow_container {
+  flex: 1;
+  background-color: var(--dark_bg);
+}
+
+.react_flow_node.selected .node {
+  box-shadow: 0 0 0 2px var(--light_50);
+}
+
+:global(.react-flow__edge-path) {
+  stroke: var(--light_30);
+  stroke-width: 2;
+}
+
+:global(.react-flow__edge.selected .react-flow__edge-path) {
+  stroke: var(--light_70);
+}
+
+:global(.react-flow__handle) {
+  width: 10px;
+  height: 10px;
+  background-color: var(--light);
+  border: 2px solid var(--dark);
+}
+
+:global(.react-flow__controls) {
+  background-color: var(--dark);
+  border: 1px solid var(--dark_30);
+}
+
+:global(.react-flow__controls-button) {
+  background-color: var(--dark_bg);
+  border-bottom: 1px solid var(--dark_30);
+  color: var(--light);
+}
+
+:global(.react-flow__controls-button:hover) {
+  background-color: var(--dark_20);
+}
+
+:global(.react-flow__minimap) {
+  background-color: var(--dark);
+  border: 1px solid var(--dark_30);
+}
+
+:global(.react-flow__background) {
+  background-color: var(--dark_bg);
+}
