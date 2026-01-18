@@ -38,6 +38,15 @@
   --light_30: rgba(220, 225, 231, 0.3);
   --light_20: rgba(220, 225, 231, 0.2);
   --light_10: rgba(220, 225, 231, 0.1);
+
+  --canvas_bg: #151515;
+  --canvas_dots: #333333;
+  --border_color: #252525;
+  --foreground: #171717;
+
+  --green: hsl(106deg 100% 71%);
+  --red: hsl(360deg 100% 71%);
+  --blue: hsl(202deg 100% 71%);
 }
 
 * {

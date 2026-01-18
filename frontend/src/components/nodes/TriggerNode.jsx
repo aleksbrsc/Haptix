@@ -4,17 +4,20 @@ import styles from '../../styles/node.module.css';
 const triggerTypes = [
   { id: 'timer', label: 'Timer (seconds from now)', params: ['seconds'] },
   { id: 'interval', label: 'Interval (repeat every X seconds)', params: ['seconds'] },
-  { id: 'manual', label: 'Manual Trigger', params: [] }
 ];
 
 export default function TriggerNode({ data, id }) {
   const selectedType = triggerTypes.find(t => t.id === data.triggerType) || triggerTypes[0];
 
   return (
-    <div className={`${styles.node} ${styles.trigger_node}`}>
+    <div className={`${styles.node} ${styles.trigger_node} ${data.isStart ? styles.start_node : ''}`}>
       <div className={styles.node_header}>
-        <span className={styles.node_icon}>⏱️</span>
-        <span className={styles.node_title}>Trigger</span>
+        <span className={styles.node_icon}>
+          <img src="/src/assets/images/icons/flag.svg" alt="flag" />
+        </span>
+        <span className={styles.node_title}>
+          {data.isStart ? 'Start Trigger' : 'Trigger'}
+        </span>
       </div>
       <div className={styles.node_body}>
         <div className={styles.node_field}>
