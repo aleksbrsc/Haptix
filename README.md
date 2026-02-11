@@ -1,6 +1,7 @@
 # Haptix
 
 A no-code programming platform for haptic accessibility devices.
+Winner @ [Hackville 2026 (Best Use of ElevenLabs)](https://devpost.com/software/haptix)
 
 ## Purpose
 
